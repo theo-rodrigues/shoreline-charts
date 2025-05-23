@@ -13,6 +13,7 @@ import { defaultTheme } from '../../theme/themes'
 import type {
   BarChartVariants,
   ChartConfig,
+  IntervalChartVariants,
   LineChartVariants,
 } from '../../types/chart'
 import {
@@ -256,6 +257,10 @@ export type ChartProps = ChartOptions & ComponentPropsWithRef<'div'>
 type DefaultHooks = {
   bar: Record<BarChartVariants, ((series: EChartsOption) => EChartsOption)[]>
   line: Record<LineChartVariants, ((series: EChartsOption) => EChartsOption)[]>
+  interval: Record<
+    IntervalChartVariants,
+    ((series: EChartsOption) => EChartsOption)[]
+  >
 }
 /**
  * Functions that are always called for a certain chart config
@@ -267,5 +272,9 @@ const defaultHooks: DefaultHooks = {
   },
   line: {
     default: [],
+  },
+  interval: {
+    default: [],
+    gradient: [],
   },
 }

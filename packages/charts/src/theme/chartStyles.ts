@@ -113,7 +113,6 @@ export const CHART_STYLES: DefaultChartStyles = {
           shadowStyle: { color: '#F5F5F5', opacity: '1' },
         },
       },
-
       animationDelay: DEFAULT_DELAY_FUNCTION,
     },
     horizontal: {
@@ -140,7 +139,6 @@ export const CHART_STYLES: DefaultChartStyles = {
           shadowStyle: { color: '#F5F5F5', opacity: '1' },
         },
       },
-
       animationDelay: DEFAULT_DELAY_FUNCTION,
     },
   },
@@ -158,6 +156,24 @@ export const CHART_STYLES: DefaultChartStyles = {
       grid: { ...GRID_DEFAULT_STYLE, height: '75%' },
       dataZoom: DATAZOOM_DEFAULT_STYLE,
     },
+  },
+  interval: {
+    default: {
+      xAxis: { type: 'category' },
+      yAxis: { type: 'value' },
+      series: {
+        type: 'line',
+        stack: 'default stack',
+        smooth: true,
+        showSymbol: false,
+        symbol: 'none',
+        lineStyle: { opacity: 0 },
+      },
+      legend: LEGEND_DEFAULT_STYLE,
+      tooltip: { ...BASE_TOOLTIP_OPIONS, trigger: 'axis' },
+      grid: GRID_DEFAULT_STYLE,
+    },
+    gradient: {},
   },
 }
 
