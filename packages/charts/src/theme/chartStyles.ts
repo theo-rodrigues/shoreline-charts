@@ -163,7 +163,7 @@ export const CHART_STYLES: DefaultChartStyles = {
       yAxis: { type: 'value' },
       series: {
         type: 'line',
-        stack: 'default stack',
+        // stack: 'default stack',
         smooth: true,
         showSymbol: false,
         symbol: 'none',
