@@ -2,7 +2,11 @@ import type { EChartsOption, SeriesOption } from 'echarts'
 
 const BarChartVariantsArray = ['vertical', 'horizontal'] as const
 const LineChartVariantsArray = ['default'] as const
+const IntervalChartVariansAray = ['default', 'gradient'] as const
 
+export type BarChartVariants = (typeof BarChartVariantsArray)[number]
+export type LineChartVariants = (typeof LineChartVariantsArray)[number]
+export type IntervalChartVariants = (typeof IntervalChartVariansAray)[number]
 /**
  * Used to check the variants of each chart, making sure is a valid chart.
  * Every variant should be in this object.
@@ -20,10 +24,6 @@ export const ChartVariants = {
     default: 'vertical' as const,
   },
 }
-
-export type BarChartVariants = (typeof BarChartVariantsArray)[number]
-
-export type LineChartVariants = (typeof LineChartVariantsArray)[number]
 
 export type LineChartConfig = { type: 'line'; variant?: LineChartVariants }
 export type BarChartConfig = {
@@ -49,4 +49,5 @@ export type ChartLoadingConfig = {
 export type DefaultChartStyles = {
   bar: Record<BarChartVariants, EChartsOption>
   line: Record<LineChartVariants, EChartsOption>
+  interval: Record<IntervalChartVariants, EChartsOption>
 }
