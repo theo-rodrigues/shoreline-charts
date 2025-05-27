@@ -121,7 +121,53 @@ export function applySeriesHook(
   }
   return fn(series)
 }
+/**
+ * Expects a series array with two series, one of all the lower points
+ * and another with all the higher points.
+* @example
+* series: [
+      {
+        data: [30, 30, 30, 40, 30, 40, 45, 25],
+        name: 'max',
+      },
+      {
+        data: [10, 15, 30, 5, 20, 15, 20, 10],
+        name: 'min',
+      },
+    ],
+ * @returns
+ */
+export function joinDataForIntervalChart(option: EChartsOption): EChartsOption {
+  const series = option.series
+  const xAxis = option.xAxis as { data: string[] }
+  if (typeof series === 'undefined' || !isArray(series)) {
+    return option
+  }
+  if (typeof xAxis === 'undefined' || isArray(xAxis)) {
+    return option
+  }
+  const firstSeriesName = (series[0].name ?? '') as string
+  const firstSeriesData = series[0].data as number[]
+  const secondSeriesName = (series[1].name ?? '') as string
+  const secondSeriesData = series[1].data as number[]
+  const categories = xAxis.data
 
+  const data: ([string, number, string] | [])[] = categories.map((c, index) => {
+    return [c, firstSeriesData[index], firstSeriesName]
+  })
+  data.push(
+    ...categories
+      .slice()
+      .reverse()
+      .map((c, index): [string, number, string] => {
+        return [c, secondSeriesData[index], secondSeriesName]
+      })
+  )
+  data.push([])
+  const out = cloneDeep(option)
+  out.series = { type: 'custom', data: data }
+  return out
+}
 /**
  * Fix required so that bars with negative values don't render
  * upside down.

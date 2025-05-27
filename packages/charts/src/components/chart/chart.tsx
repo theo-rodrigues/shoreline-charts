@@ -20,6 +20,7 @@ import {
   checkValidVariant,
   getChartOptions,
   getDefaultByType,
+  joinDataForIntervalChart,
   normalizeBarData,
   normalizeHorizontalBarData,
 } from '../../utils/chart'
@@ -274,7 +275,7 @@ const defaultHooks: DefaultHooks = {
     default: [],
   },
   interval: {
-    default: [],
+    default: [joinDataForIntervalChart],
     gradient: [],
   },
 }

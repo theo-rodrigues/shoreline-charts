@@ -1,4 +1,4 @@
-import type { EChartsOption } from 'echarts'
+import type { CustomSeriesRenderItem, EChartsOption } from 'echarts'
 import type { DefaultChartStyles } from '../types/chart'
 import type { EChartsInstance } from 'echarts-for-react'
 import { defaultSpinnerColor } from './colors'
@@ -89,6 +89,31 @@ export const DATAZOOM_DEFAULT_STYLE: EChartsOption['dataZoom'] = [
 
 export const DEFAULT_DELAY_FUNCTION = (idx: number) => idx * 20
 
+export const INTERVAL_RENDER_ITEM: CustomSeriesRenderItem = (params, api) => {
+  const context = params.context as { points: number[][] | undefined }
+  console.log(`value is ${api.value(0)}`)
+  if (typeof api.value(0) === 'undefined') {
+    console.log(context.points)
+    return {
+      type: 'polygon',
+      transition: ['shape'],
+      shape: {
+        smooth: 0.3,
+        // smoothConstraint: true,
+        points: context.points,
+      },
+      emphasisDisabled: true,
+      style: {
+        fill: api.visual('color'),
+        stroke: api.visual('color'),
+      },
+    }
+  }
+  context.points ??= []
+  context.points.push(api.coord([api.value(0), api.value(1)]))
+  console.log(context.points)
+  return
+}
 // if you're looking for a certain feature in a chart and don't find it here, check themes.ts
 export const CHART_STYLES: DefaultChartStyles = {
   bar: {
@@ -162,14 +187,17 @@ export const CHART_STYLES: DefaultChartStyles = {
       xAxis: { type: 'category' },
       yAxis: { type: 'value' },
       series: {
-        type: 'line',
-        // stack: 'default stack',
-        smooth: true,
-        showSymbol: false,
-        symbol: 'none',
-        lineStyle: { opacity: 0 },
+        type: 'custom',
+        renderItem: INTERVAL_RENDER_ITEM,
+        dimensions: ['category', 'value', 'Area'],
+        encode: {
+          x: 'category',
+          y: 'value',
+          itemName: 2,
+          seriesName: 2,
+          tooltip: 'value',
+        },
       },
-      legend: LEGEND_DEFAULT_STYLE,
       tooltip: { ...BASE_TOOLTIP_OPIONS, trigger: 'axis' },
       grid: GRID_DEFAULT_STYLE,
     },

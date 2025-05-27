@@ -4,6 +4,7 @@ import type {
   BarChartVariants,
   ChartConfig,
   ChartUnit,
+  IntervalChartVariants,
   LineChartVariants,
 } from '../../types/chart'
 import { Chart } from '../chart/chart'
@@ -192,6 +193,10 @@ export type ChartCompositorProps = ChartCompositorOptions &
 type DefaultHooks = {
   bar: Record<BarChartVariants, ((series: SeriesOption) => SeriesOption)[]>
   line: Record<LineChartVariants, ((series: SeriesOption) => SeriesOption)[]>
+  interval: Record<
+    IntervalChartVariants,
+    ((series: SeriesOption) => SeriesOption)[]
+  >
 }
 /**
  * Functions that are always called for a certain chart config
@@ -203,5 +208,9 @@ const defaultHooks: DefaultHooks = {
   },
   line: {
     default: [],
+  },
+  interval: {
+    default: [],
+    gradient: [],
   },
 }
