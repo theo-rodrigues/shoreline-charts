@@ -89,9 +89,9 @@ export const DATAZOOM_DEFAULT_STYLE: EChartsOption['dataZoom'] = [
 
 export const DEFAULT_DELAY_FUNCTION = (idx: number) => idx * 20
 
-export const INTERVAL_RENDER_ITEM: CustomSeriesRenderItem = (params, api) => {
+const INTERVAL_RENDER_ITEM: CustomSeriesRenderItem = (params, api) => {
   const context = params.context as { points: number[][] | undefined }
-  console.log(`value is ${api.value(0)}`)
+
   if (typeof api.value(0) === 'undefined') {
     console.log(context.points)
     return {
@@ -111,7 +111,6 @@ export const INTERVAL_RENDER_ITEM: CustomSeriesRenderItem = (params, api) => {
   }
   context.points ??= []
   context.points.push(api.coord([api.value(0), api.value(1)]))
-  console.log(context.points)
   return
 }
 // if you're looking for a certain feature in a chart and don't find it here, check themes.ts

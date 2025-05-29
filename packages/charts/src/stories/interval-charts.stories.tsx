@@ -84,9 +84,9 @@ export const Custom: Story = {
         chartConfig={null}
         option={{
           tooltip: {
-            trigger: 'axis', // Trigger when hovering over the axis
+            trigger: 'axis',
             axisPointer: {
-              type: 'line', // Or 'line' or 'cross'
+              type: 'line',
             },
             formatter: (params) => {
               // params is an array of objects, one for each data item at the hovered x-axis position
@@ -132,7 +132,7 @@ export const Custom: Story = {
             type: 'custom',
             // name: 'Área',
             dimensions: ['category', 'value', 'Area'],
-
+            animationDelayUpdate: 10,
             encode: {
               x: 'category',
               y: 'value',
