@@ -1,7 +1,7 @@
 import type { EChartsOption, SeriesOption } from 'echarts'
 
 const BarChartVariantsArray = ['vertical', 'horizontal'] as const
-const LineChartVariantsArray = ['default'] as const
+const LineChartVariantsArray = ['default', 'area'] as const
 const IntervalChartVariantsArray = ['default', 'gradient'] as const
 
 export type BarChartVariants = (typeof BarChartVariantsArray)[number]
@@ -51,7 +51,7 @@ export type DefaultChartStyles = {
 export type ChartUnit = {
   series: SeriesOption
   chartConfig: ChartConfig
-  hooks?: CallableFunction[] | null
+  hooks?: ((series: EChartsOption) => EChartsOption)[] | null
 }
 
 export type ChartLoadingConfig = {
@@ -59,4 +59,12 @@ export type ChartLoadingConfig = {
   color?: string
   textColor?: string
   fontSize?: number
+}
+export type DefaultHooks = {
+  bar: Record<BarChartVariants, ((series: EChartsOption) => EChartsOption)[]>
+  line: Record<LineChartVariants, ((series: EChartsOption) => EChartsOption)[]>
+  interval: Record<
+    IntervalChartVariants,
+    ((series: EChartsOption) => EChartsOption)[]
+  >
 }

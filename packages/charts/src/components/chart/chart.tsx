@@ -10,12 +10,7 @@ import type { EChartsOption, SeriesOption } from 'echarts'
 import ReactECharts, { type EChartsInstance } from 'echarts-for-react'
 import * as echarts from 'echarts'
 import { defaultTheme } from '../../theme/themes'
-import type {
-  BarChartVariants,
-  ChartConfig,
-  IntervalChartVariants,
-  LineChartVariants,
-} from '../../types/chart'
+import type { ChartConfig, DefaultHooks } from '../../types/chart'
 import {
   checkValidVariant,
   getChartOptions,
@@ -50,8 +45,9 @@ export const Chart = forwardRef<ReactECharts | undefined, ChartProps>(
   function Charts(props, ref) {
     const {
       series,
-      xAxis,
-      yAxis,
+      xAxis = {},
+      yAxis = {},
+      title,
       option,
       loading = false,
       loadingConfig = DEFAULT_LOADING_SPINNER,
@@ -86,8 +82,9 @@ export const Chart = forwardRef<ReactECharts | undefined, ChartProps>(
     const chartOptions: EChartsOption = useMemo(() => {
       const wholeOption = cloneDeep(option) ?? {}
       wholeOption.series = series
-      wholeOption.xAxis = xAxis ?? {}
-      wholeOption.yAxis = yAxis ?? {}
+      wholeOption.xAxis = xAxis
+      wholeOption.yAxis = yAxis
+      wholeOption.title = title
       if (chartConfig === null) {
         return wholeOption
       }
@@ -191,6 +188,10 @@ export interface ChartOptions {
    */
   yAxis?: EChartsOption['yAxis']
   /**
+   * Defines the title, as well as its position and style.
+   */
+  title?: EChartsOption['title']
+  /**
    * Configs containing **type** of chart and its **variants**, each variant is a pre-defined chart style for each type.
    *
    * **null** means that nothing will be done to the options, and the chart will be rendered as-is.
@@ -255,14 +256,6 @@ export interface ChartOptions {
 
 export type ChartProps = ChartOptions & ComponentPropsWithRef<'div'>
 
-type DefaultHooks = {
-  bar: Record<BarChartVariants, ((series: EChartsOption) => EChartsOption)[]>
-  line: Record<LineChartVariants, ((series: EChartsOption) => EChartsOption)[]>
-  interval: Record<
-    IntervalChartVariants,
-    ((series: EChartsOption) => EChartsOption)[]
-  >
-}
 /**
  * Functions that are always called for a certain chart config
  */
@@ -273,6 +266,7 @@ const defaultHooks: DefaultHooks = {
   },
   line: {
     default: [],
+    area: [],
   },
   interval: {
     default: [joinDataForIntervalChart],

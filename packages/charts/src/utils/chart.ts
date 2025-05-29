@@ -4,6 +4,7 @@ import { type ChartConfig, type ChartUnit, ChartVariants } from '../types/chart'
 import { merge } from '@vtex/shoreline-utils'
 import { cloneDeep, isArray, isDate } from 'lodash'
 import { defaultTheme } from '../theme/themes'
+import { defaultColorPreset } from '../theme/colors'
 
 export const buildDefaultSerie = (
   serie: SeriesOption | SeriesOption[],
@@ -58,7 +59,10 @@ export const getChartOptions = (
   if (typeof options === 'undefined') return
   const { series, ...rest } = options
 
-  const defaultStyle = getDefaultStyle(type, variant)
+  const defaultStyle =
+    variant && checkValidVariant(type, variant)
+      ? CHART_STYLES[type][variant]
+      : CHART_STYLES[type][getDefaultByType(type)]
 
   const { series: defaultSeries, ...defaultRest } = defaultStyle
   const formattedSeries = formatSeries(series, defaultStyle)
@@ -66,8 +70,55 @@ export const getChartOptions = (
   if (type === 'bar' && isArray(formattedSeries) && chartConfig.gap)
     setBarGap(formattedSeries, chartConfig.gap)
 
+  if (type === 'line' && variant === 'area') setAreaColors(formattedSeries)
+
   const mergedOptions = merge(defaultRest, rest)
   return { ...mergedOptions, series: formattedSeries }
+}
+
+function setAreaColors(series: EChartsOption['series']) {
+  if (!isArray(series)) {
+    if (series?.type !== 'line' || !series.areaStyle) return
+    series.areaStyle.color = {
+      type: 'linear',
+      x: 0,
+      y: 0,
+      x2: 0,
+      y2: 1,
+      colorStops: [
+        {
+          offset: 0,
+          color: defaultColorPreset[0],
+        },
+        {
+          offset: 1,
+          color: '#FFFFFF',
+        },
+      ],
+    }
+    return
+  }
+  series.forEach((value, index) => {
+    if (value?.type !== 'line' || !value.areaStyle) return
+    value.areaStyle.color = {
+      type: 'linear',
+      x: 0,
+      y: 0,
+      x2: 0,
+      y2: 1,
+      colorStops: [
+        {
+          offset: 0,
+          color: defaultColorPreset[index % 4],
+        },
+        {
+          offset: 1,
+          color: '#FFFFFF',
+        },
+      ],
+    }
+    return
+  })
 }
 
 /**
@@ -89,37 +140,27 @@ function getDefaultStyle(
  * @param multi MultiChart config that will be used to pass
  * @returns SeriesOption correct
  */
-export const getDataToChartCompositor = (multi: ChartUnit): SeriesOption => {
-  const defaultStyle = getDefaultStyle(
-    multi.chartConfig.type,
-    multi.chartConfig.variant
-  )
+export const getDataToChartCompositor = ({
+  chartConfig,
+  series,
+}: ChartUnit): SeriesOption => {
+  const { type, variant } = chartConfig
+  const defaultStyle =
+    variant && checkValidVariant(type, variant)
+      ? CHART_STYLES[type][variant]
+      : CHART_STYLES[type][getDefaultByType(type)]
 
-  const serieFinal = merge(defaultStyle.series, multi.series) as SeriesOption
+  const serieFinal = merge(defaultStyle.series, series) as SeriesOption
 
   return serieFinal
 }
 
 export function applySeriesHook(
-  series: SeriesOption[],
-  fn: CallableFunction
-): SeriesOption[]
-export function applySeriesHook(
   series: SeriesOption,
-  fn: CallableFunction
-): SeriesOption
-export function applySeriesHook(
-  series: SeriesOption | SeriesOption[],
-  fn: CallableFunction
-): SeriesOption | SeriesOption[]
-export function applySeriesHook(
-  series: SeriesOption | SeriesOption[],
-  fn: CallableFunction
-): SeriesOption | SeriesOption[] {
-  if (Array.isArray(series)) {
-    return series.map((v: any) => fn(v))
-  }
-  return fn(series)
+  fn: (option: EChartsOption) => EChartsOption
+): SeriesOption {
+  return fn({ series: series }).series as SeriesOption
+  // we can be relatively certain no one's gonna return undefined from these
 }
 /**
  * Expects a series array with two series, one of all the lower points
