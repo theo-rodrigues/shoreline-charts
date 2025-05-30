@@ -64,18 +64,19 @@ export const ChartCompositor = forwardRef<
         defaultHooks[type][checkedVariant]
       seriesHooks.push(...(chart.hooks ?? []))
 
-      return {
+      const out = {
         ...chart,
         series: seriesHooks.reduce(
-          (out, fn) => applySeriesHook(out, fn),
+          (out, fn) => applySeriesHook(out, { xAxis: xAxis, yAxis: yAxis }, fn),
           chart.series
         ),
       }
+      return out
     })
   }, [])
 
   const seriesOptions: EChartsOption['series'] = useMemo(() => {
-    return hookedUnits.map((u) => getDataToChartCompositor(u))
+    return hookedUnits.flatMap((u) => getDataToChartCompositor(u))
   }, [hookedUnits])
 
   const tooltipOptions: EChartsOption['tooltip'] = useMemo(() => {
@@ -107,6 +108,7 @@ export const ChartCompositor = forwardRef<
       series={chartOptions.series ?? {}}
       xAxis={chartOptions.xAxis}
       yAxis={chartOptions.yAxis}
+      title={chartOptions.title}
       option={chartOptions}
       style={style}
       ref={ref}
@@ -182,7 +184,7 @@ export interface ChartCompositorOptions {
 }
 
 export type ChartCompositorProps = ChartCompositorOptions &
-  ComponentPropsWithRef<'div'>
+  Omit<ComponentPropsWithRef<'div'>, 'title'>
 
 /**
  * Functions that are always called for a certain chart config

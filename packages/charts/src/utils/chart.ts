@@ -13,7 +13,6 @@ export const buildDefaultSerie = (
   const seriesClone = cloneDeep(serie)
   const defaultStylesClone = cloneDeep(defaultStyle.series)
   const serieMerged = merge(defaultStylesClone, seriesClone) as SeriesOption
-
   return serieMerged
 }
 
@@ -25,7 +24,6 @@ export const formatSeries = (
   if (Array.isArray(series)) {
     return series.map((serie) => buildDefaultSerie(serie, defaultStyle))
   }
-
   return buildDefaultSerie(series, defaultStyle)
 }
 
@@ -145,21 +143,24 @@ export const getDataToChartCompositor = ({
   series,
 }: ChartUnit): SeriesOption => {
   const { type, variant } = chartConfig
-  const defaultStyle =
+  const defaultStyle: EChartsOption =
     variant && checkValidVariant(type, variant)
       ? CHART_STYLES[type][variant]
       : CHART_STYLES[type][getDefaultByType(type)]
-
-  const serieFinal = merge(defaultStyle.series, series) as SeriesOption
+  const serieFinal = formatSeries(series, defaultStyle) as SeriesOption
+  // const serieFinal = merge(defaultStyle.series, series) as SeriesOption
 
   return serieFinal
 }
 
 export function applySeriesHook(
-  series: SeriesOption,
+  series: SeriesOption | SeriesOption[],
+  context: { xAxis: EChartsOption['xAxis']; yAxis: EChartsOption['yAxis'] },
   fn: (option: EChartsOption) => EChartsOption
 ): SeriesOption {
-  return fn({ series: series }).series as SeriesOption
+  const { xAxis, yAxis } = context
+  return fn({ series: series, xAxis: xAxis, yAxis: yAxis })
+    .series as SeriesOption
   // we can be relatively certain no one's gonna return undefined from these
 }
 /**

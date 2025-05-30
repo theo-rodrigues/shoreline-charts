@@ -254,7 +254,8 @@ export interface ChartOptions {
   onEvents?: Record<string, CallableFunction>
 }
 
-export type ChartProps = ChartOptions & ComponentPropsWithRef<'div'>
+export type ChartProps = ChartOptions &
+  Omit<ComponentPropsWithRef<'div'>, 'title'>
 
 /**
  * Functions that are always called for a certain chart config

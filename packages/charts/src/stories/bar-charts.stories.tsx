@@ -15,7 +15,7 @@ type Story = StoryObj<typeof Chart>
 export const Basic: Story = {
   args: {
     xAxis: { data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
-    series: [{ data: [1, 2, 3, 4, 5, 6, 7] }],
+    series: { data: [1, 2, 3, 4, 5, 6, 7] },
     chartConfig: { type: 'bar' },
   },
 }
@@ -42,7 +42,7 @@ export const Loading: Story = {
     xAxis: {
       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     },
-    series: [{ data: [1, 2, 3, 4, 5, 6, 7] }],
+    series: { data: [1, 2, 3, 4, 5, 6, 7] },
     chartConfig: { type: 'bar' },
     loading: true,
   },
@@ -130,6 +130,7 @@ export const Horizontal: Story = {
       { data: [1, 4, 2, 1, 4, 3, 5, 9], name: 'Series 1' },
     ],
     chartConfig: { type: 'bar', variant: 'horizontal', gap: 2 },
+    style: { height: 400 },
   },
 }
 
@@ -151,11 +152,9 @@ export const Animation: Story = {
         animationEasing: 'elasticInOut',
       },
     ],
-    option: {
-      title: {
-        text: 'Reload animation by clicking on the legend',
-        left: 'center',
-      },
+    title: {
+      text: 'Reload animation by clicking on the legend',
+      left: 'center',
     },
     chartConfig: { type: 'bar' },
   },

@@ -49,7 +49,7 @@ export type DefaultChartStyles = {
 }
 
 export type ChartUnit = {
-  series: SeriesOption
+  series: SeriesOption | SeriesOption[]
   chartConfig: ChartConfig
   hooks?: ((series: EChartsOption) => EChartsOption)[] | null
 }

@@ -72,7 +72,7 @@ export const Transformacoes: Story = {
       xAxis: { data: ['同', '性', '恋', '阳', '平', '声', '上', '下'] },
     }
 
-    console.log(joinDataForIntervalChart(cu).series.data)
+    // console.log(joinDataForIntervalChart(cu).series?.data)
     console.log(data)
     return <div> {JSON.stringify(joinDataForIntervalChart(cu))} </div>
   },

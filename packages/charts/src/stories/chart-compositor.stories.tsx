@@ -42,26 +42,45 @@ export const Basic: Story = {
   args: {
     charts: [
       {
-        series: { data: data1, name: 'Bar 1' },
-        chartConfig: { type: 'bar' },
+        series: [
+          { data: data1, name: 'Bar 1' },
+          { data: data2, name: 'Bar 2' },
+        ],
+        chartConfig: { type: 'bar', variant: 'vertical' },
       },
       {
-        series: {
-          data: data2,
-          name: 'Bar 2',
-        },
-        chartConfig: { type: 'bar' },
-      },
-      {
-        series: {
-          data: data3,
-          name: 'Average',
-        },
-        chartConfig: { type: 'line' },
+        series: { data: data3, name: 'Average' },
+        chartConfig: { type: 'line', variant: 'default' },
       },
     ],
     tooltip: { type: 'line' },
     zoom: true,
     style: { height: 550 },
+  },
+}
+
+export const ConfidenceBand: Story = {
+  args: {
+    charts: [
+      {
+        chartConfig: { type: 'interval' },
+        series: [
+          {
+            data: [10, 10, 10, 20, 20],
+            name: 'Lower bound',
+          },
+          {
+            data: [50, 60, 60, 70, 70],
+            name: 'Higher bound',
+          },
+        ],
+      },
+      {
+        chartConfig: { type: 'line' },
+        series: { data: [5, 35, 45, 65, 50], name: 'Trajectory' },
+      },
+    ],
+    tooltip: { type: 'interval' },
+    xAxis: { type: 'category', data: ['A', 'B', 'C', 'D', 'E'] },
   },
 }

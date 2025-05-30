@@ -94,7 +94,6 @@ const INTERVAL_RENDER_ITEM: CustomSeriesRenderItem = (params, api) => {
   const context = params.context as { points: number[][] | undefined }
 
   if (typeof api.value(0) === 'undefined') {
-    console.log(context.points)
     return {
       type: 'polygon',
       transition: ['shape'],
