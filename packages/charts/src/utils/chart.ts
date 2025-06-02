@@ -165,20 +165,14 @@ export function applySeriesHook(
 }
 /**
  * Expects a series array with two series, one of all the lower points
- * and another with all the higher points.
+ * and another with all the higher points, as well as a categorical X axis.
 * @example
 * series: [
-      {
-        data: [30, 30, 30, 40, 30, 40, 45, 25],
-        name: 'max',
-      },
-      {
-        data: [10, 15, 30, 5, 20, 15, 20, 10],
-        name: 'min',
-      },
+      { data: [30, 30, 30, 40, 30, 40, 45, 25], name: 'max' },
+      { data: [10, 15, 30,  5, 20, 15, 20, 10], name: 'min' },
     ],
- * @returns
- */
+  xAxis: {data: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']}
+    */
 export function joinDataForIntervalChart(option: EChartsOption): EChartsOption {
   const series = option.series
   const xAxis = option.xAxis as { data: string[] }
@@ -191,7 +185,8 @@ export function joinDataForIntervalChart(option: EChartsOption): EChartsOption {
   const firstSeriesName = (series[0].name ?? '') as string
   const firstSeriesData = series[0].data as number[]
   const secondSeriesName = (series[1].name ?? '') as string
-  const secondSeriesData = series[1].data as number[]
+  const secondSeries = series[1].data as number[]
+  const secondSeriesData = secondSeries.slice().reverse()
   const categories = xAxis.data
 
   const data: ([string, number, string] | [])[] = categories.map((c, index) => {

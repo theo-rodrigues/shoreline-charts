@@ -50,7 +50,7 @@ export const Works: Story = {
         name: 'max',
       },
       {
-        data: [15, 15, 30, 5, 20, 15, 20, 10],
+        data: [15, 15, 15, 5, 20, 15, 20, 10],
         name: 'min',
       },
     ],
