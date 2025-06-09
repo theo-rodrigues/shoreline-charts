@@ -173,7 +173,7 @@ export function applySeriesHook(
     ],
   xAxis: {data: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']}
     */
-export function joinDataForIntervalChart(option: EChartsOption): EChartsOption {
+export function joinDataForRangeChart(option: EChartsOption): EChartsOption {
   const series = option.series
   const xAxis = option.xAxis as { data: string[] }
   if (typeof series === 'undefined' || !isArray(series)) {

@@ -229,7 +229,7 @@ export const CHART_STYLES: DefaultChartStyles = {
       dataZoom: DATAZOOM_DEFAULT_STYLE,
     },
   },
-  interval: {
+  range: {
     default: {
       xAxis: { type: 'category' },
       yAxis: { type: 'value' },

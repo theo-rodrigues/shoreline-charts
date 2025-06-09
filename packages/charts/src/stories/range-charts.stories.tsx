@@ -2,10 +2,10 @@ import type { StoryObj } from '@storybook/react/*'
 import { Chart } from '../components'
 import type { EChartsOption } from 'echarts'
 import {} from 'lodash'
-import { joinDataForIntervalChart } from '../utils/chart'
+import { joinDataForRangeChart } from '../utils/chart'
 
 export default {
-  title: 'Charts/Interval',
+  title: 'Charts/Range',
   component: Chart,
 }
 
@@ -32,7 +32,7 @@ const data = [
 ]
 export const basic: Story = {
   args: {
-    chartConfig: { type: 'interval' },
+    chartConfig: { type: 'range' },
     xAxis: { data: ['A', 'B', 'C', 'D'] },
     series: [
       { data: [10, 25, 10, 15], name: 'min' },
@@ -42,7 +42,7 @@ export const basic: Story = {
 }
 export const Works: Story = {
   args: {
-    chartConfig: { type: 'interval' },
+    chartConfig: { type: 'range' },
     xAxis: { data: ['同', '性', '恋', '阳', '平', '声', '上', '下'] },
     series: [
       {
@@ -73,9 +73,8 @@ export const Transformacoes: Story = {
       xAxis: { data: ['同', '性', '恋', '阳', '平', '声', '上', '下'] },
     }
 
-    // console.log(joinDataForIntervalChart(cu).series?.data)
     console.log(data)
-    return <div> {JSON.stringify(joinDataForIntervalChart(cu))} </div>
+    return <div> {JSON.stringify(joinDataForRangeChart(cu))} </div>
   },
 }
 export const Custom: Story = {
