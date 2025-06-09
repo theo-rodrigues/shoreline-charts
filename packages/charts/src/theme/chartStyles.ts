@@ -1,4 +1,11 @@
-import type { CustomSeriesRenderItem, EChartsOption } from 'echarts'
+import {
+  color,
+  type LinearGradientObject,
+  type PatternObject,
+  type RadialGradientObject,
+  type CustomSeriesRenderItem,
+  type EChartsOption,
+} from 'echarts'
 import type { DefaultChartStyles } from '../types/chart'
 import type { EChartsInstance } from 'echarts-for-react'
 import { defaultSpinnerColor } from './colors'
@@ -91,9 +98,21 @@ export const DATAZOOM_DEFAULT_STYLE: EChartsOption['dataZoom'] = [
 export const DEFAULT_DELAY_FUNCTION = (idx: number) => idx * 20
 
 const INTERVAL_RENDER_ITEM: CustomSeriesRenderItem = (params, api) => {
-  const context = params.context as { points: number[][] | undefined }
-
+  const context = params.context as {
+    points: number[][]
+    lastColor: string | undefined
+  }
   if (typeof api.value(0) === 'undefined') {
+    let fillColor:
+      | string
+      | LinearGradientObject
+      | RadialGradientObject
+      | PatternObject
+      | undefined =
+      color.modifyAlpha(api.visual('color') as string, 0.15) ??
+      color.modifyAlpha(context.lastColor as string, 0.15)
+
+    fillColor ??= api.visual('color') // in case color is a gradient, which returns null on modify alpha
     return {
       type: 'polygon',
       transition: ['shape'],
@@ -104,13 +123,25 @@ const INTERVAL_RENDER_ITEM: CustomSeriesRenderItem = (params, api) => {
       },
       emphasisDisabled: true,
       style: {
-        fill: api.visual('color'),
-        stroke: api.visual('color'),
+        // fill: {
+        //   type: 'linear',
+        //   x: 0,
+        //   y: 0,
+        //   x2: 1,
+        //   y2: 1,
+        //   colorStops: [
+        //     { offset: 0, color: 'rgb(226, 219, 22)' },
+        //     { offset: 0.5, color: 'rgb(64, 108, 209)' },
+        //   ],
+        // },
+        fill: fillColor,
+        stroke: fillColor,
       },
     }
   }
   context.points ??= []
   context.points.push(api.coord([api.value(0), api.value(1)]))
+  context.lastColor = api.visual('color') as string
   return
 }
 // if you're looking for a certain feature in a chart and don't find it here, check themes.ts

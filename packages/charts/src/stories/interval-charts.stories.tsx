@@ -54,6 +54,7 @@ export const Works: Story = {
         name: 'min',
       },
     ],
+    // option: { visualMap: { dimension: 1, calculable: true } },
   },
 }
 export const Transformacoes: Story = {
