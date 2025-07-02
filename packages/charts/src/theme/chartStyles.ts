@@ -9,7 +9,10 @@ import {
 import type { DefaultChartStyles } from '../types/chart'
 import type { EChartsInstance } from 'echarts-for-react'
 import { defaultSpinnerColor } from './colors'
-import { getTooltipStaticString } from '../components/tooltip'
+import {
+  getRangeChartStaticString,
+  getTooltipStaticString,
+} from '../components/tooltip'
 
 const BASE_TOOLTIP_OPIONS: EChartsOption['tooltip'] = {
   trigger: 'item',
@@ -245,7 +248,11 @@ export const CHART_STYLES: DefaultChartStyles = {
           tooltip: 'value',
         },
       },
-      tooltip: { ...BASE_TOOLTIP_OPIONS, trigger: 'axis' },
+      tooltip: {
+        ...BASE_TOOLTIP_OPIONS,
+        trigger: 'axis',
+        formatter: getRangeChartStaticString,
+      },
       grid: GRID_DEFAULT_STYLE,
     },
     gradient: {},

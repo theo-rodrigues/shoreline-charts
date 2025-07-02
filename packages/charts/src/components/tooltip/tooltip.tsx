@@ -75,3 +75,20 @@ export const getTooltipStaticString = (
 export interface ChartTooltipProps {
   params: TooltipComponentFormatterCallbackParams
 }
+
+export const getRangeChartStaticString = (params: any): string =>
+  renderToStaticMarkup(<RangeChartTooltip params={params} />)
+
+function RangeChartTooltip({ params }: { params: any }) {
+  const datas = params.reverse()
+  return (
+    <>
+      <h4 data-sl-chart-tooltip-title>{params[0].value[0]}</h4>
+      <div data-sl-chart-tooltip>
+        {datas.map((data) => (
+          <IntervalTooltipBase key={data.dataIndex} params={data} />
+        ))}
+      </div>
+    </>
+  )
+}

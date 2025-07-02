@@ -72,8 +72,6 @@ export const Transformacoes: Story = {
       ],
       xAxis: { data: ['同', '性', '恋', '阳', '平', '声', '上', '下'] },
     }
-
-    console.log(data)
     return <div> {JSON.stringify(joinDataForRangeChart(cu))} </div>
   },
 }
