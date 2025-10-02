@@ -11,6 +11,7 @@ export default {
 }
 
 type Story = StoryObj<typeof Chart>
+
 export const BasicSync: Story = {
   render: () => {
     return (

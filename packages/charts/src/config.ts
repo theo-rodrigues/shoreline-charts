@@ -24,3 +24,15 @@ export function addHoverToLegendColor(color: string, hover: string) {
 export function registerLocale(name: string, locale: any): void {
   echarts.registerLocale(name, locale)
 }
+/**
+ *
+ * @param name Name the map will receive.
+ * @param geoJSON The actual geoJSON encoded map.
+ */
+export function registerMap(
+  name: string,
+  geoJSON: any,
+  specialAreas?: any
+): void {
+  echarts.registerMap(name, geoJSON, specialAreas)
+}
