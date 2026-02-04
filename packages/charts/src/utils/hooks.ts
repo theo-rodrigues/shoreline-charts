@@ -1,5 +1,5 @@
 import type { EChartsOption, LineSeriesOption, SeriesOption } from 'echarts'
-import { cloneDeep, isArray, isDate, isObject } from 'lodash'
+import { isArray, isDate, isObject } from 'lodash'
 import { defaultTheme } from '../theme/themes'
 import {
   defaultAreaColors,
@@ -23,13 +23,11 @@ export function normalizeBarData(option: EChartsOption): EChartsOption {
   const series = option.series
   if (typeof series === 'undefined') return option
   if (isArray(series)) {
-    const out = cloneDeep(option)
-    out.series = series.map((v: any) => normalizeBarDataInner(v))
-    return out
+    option.series = series.map((v: any) => normalizeBarDataInner(v))
+    return option
   }
-  const out = cloneDeep(option)
-  out.series = normalizeBarDataInner(series)
-  return out
+  option.series = normalizeBarDataInner(series)
+  return option
 }
 
 export function normalizeBarDataInner(series: SeriesOption): SeriesOption {
@@ -72,13 +70,11 @@ export function normalizeHorizontalBarData(
   const series = option.series
   if (typeof series === 'undefined') return option
   if (isArray(series)) {
-    const out = cloneDeep(option)
-    out.series = series.map((v: any) => normalizeHorizontalBarDataInner(v))
-    return out
+    option.series = series.map((v: any) => normalizeHorizontalBarDataInner(v))
+    return option
   }
-  const out = cloneDeep(option)
-  out.series = normalizeHorizontalBarDataInner(series)
-  return out
+  option.series = normalizeHorizontalBarDataInner(series)
+  return option
 }
 export function normalizeHorizontalBarDataInner(
   series: SeriesOption
@@ -120,13 +116,16 @@ export function normalizeHorizontalBarDataInner(
 }
 
 export function roundCap(options: EChartsOption): EChartsOption {
-  const outOptions = cloneDeep(options)
-  const series = outOptions.series
+  const series = options.series
   if (!isArray(series) || !isArray(series[0].data)) return options
 
   const defaultBorderRadius = defaultTheme.bar.itemStyle.borderRadius
   series[0].data.forEach((_, i) => {
     for (let j = series.length - 1; j > -1; j--) {
+      if (series[j].name?.toString().startsWith('__invisible')) {
+        continue
+      }
+
       const data = series[j].data as (
         | number
         | { value: number; itemStyle: { borderRadius: number[] } }
@@ -154,7 +153,41 @@ export function roundCap(options: EChartsOption): EChartsOption {
       }
     }
   })
-  return outOptions
+  return options
+}
+
+export function normalizeStackedBars(options: EChartsOption): EChartsOption {
+  const series = options.series
+  if (!isArray(series) || !isArray(series[0].data)) return options
+
+  const seriesSums: number[] = []
+  for (let i = 0; i < series[0].data.length; i++) {
+    let currentTotal = 0
+    series.forEach((v) => {
+      const data = v.data as (number | { value: number })[]
+      const current = data[i] as number | { value: number }
+      if (isObject(current)) {
+        currentTotal += current.value
+      } else {
+        currentTotal += current
+      }
+    })
+    seriesSums.push(currentTotal)
+  }
+
+  series.forEach((serie) => {
+    const data = serie.data as (number | { value: number })[]
+    data.forEach((v, j) => {
+      let value = 0
+      if (isObject(v)) {
+        value = v.value
+      } else {
+        value = v
+      }
+      data[j] = value / seriesSums[j]
+    })
+  })
+  return options
 }
 
 export function setAreaGradients(options: EChartsOption): EChartsOption {
@@ -165,21 +198,30 @@ export function setAreaColors(
   options: EChartsOption,
   gradient = false
 ): EChartsOption {
-  const returnOptions = cloneDeep(options) as EChartsOption
-
-  const { series, ...otherProps } = returnOptions
+  const { series, ...otherProps } = options
 
   const arraySeries = isArray(series) ? series : [series]
 
-  arraySeries.forEach((v, index) => {
+  let nextColorIndex = 0
+  arraySeries.forEach((v) => {
     const serie = v as LineSeriesOption
+    if (serie.color) {
+      return
+    }
     const areaColor =
-      defaultColorShade[defaultColorPreset[index % defaultAreaColors.length]]
+      defaultColorShade[
+        defaultColorPreset[nextColorIndex % defaultAreaColors.length]
+      ]
     serie.areaStyle ??= {}
 
     if (!gradient) {
-      serie.areaStyle.color = defaultAreaColors[index]
-      serie.color = defaultColorShade[areaColor]
+      // defaultColorShade[areaColor]
+      serie.areaStyle.color = areaColor
+      console.log(serie.areaStyle.color)
+      serie.color = areaColor
+      console.log(serie.color)
+
+      nextColorIndex++
       return
     }
     const color = {
@@ -202,5 +244,6 @@ export function setAreaColors(
     }
     serie.areaStyle.color = color
   })
+  nextColorIndex++
   return { series, ...otherProps }
 }
